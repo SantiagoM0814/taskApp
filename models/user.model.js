@@ -1,4 +1,3 @@
-import { use } from 'react';
 import { mongoose } from '../config/db/connection.js';
 import { encryptPassword } from '../library/appBcrypt.js';
 
@@ -12,7 +11,6 @@ userChema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
 
     try {
-        const bcrypt = await import('bcryptjs');
         this.password = await encryptPassword(this.password);
         next();
     } catch (error) {
