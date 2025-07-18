@@ -5,7 +5,7 @@ import { verifyToken } from '../middleware/authMiddleware.js';
 const router = Router();
 const name = '/user';
 
-// router.use(verifyToken);
+router.use(verifyToken);
 
 router.route(name)
     .post(UserController.addUser)
