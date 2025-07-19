@@ -123,6 +123,13 @@ class TaskController {
 
       const parsedAssignees = typeof assignees === 'string' ? JSON.parse(assignees) : assignees;
       const parsedTags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+      const files = (req.files || []).map(file => ({
+        name: file.originalname,
+        url: file.path, // o file.filename si vas a construir una URL pública
+        type: getFileType(file.mimetype),
+        size: file.size,
+        uploadDate: new Date()
+      }));
 
       const taskId = req.params.id;
       const updatedTask = await TaskModel.findOneAndUpdate(
@@ -136,14 +143,13 @@ class TaskController {
           startDate,
           endDate,
           notificationEmail,
-          assignees: Array.isArray(parsedAssignees)
-            ? parsedAssignees.map(assignee => ({
-              name: assignee.name,
-              email: assignee.email,
-              role: assignee.role,
-              userId: assignee.userId
-            }))
-            : [],
+          assignees: parsedAssignees.map(assignee => ({
+            name: assignee.name,
+            email: assignee.email,
+            role: assignee.role,
+            userId: assignee.userId
+          })),
+          files,
           createdBy: createdBy || userId,
           tags: Array.isArray(parsedTags) ? parsedTags : []
         },
@@ -167,7 +173,7 @@ class TaskController {
         _id: req.params.id
       });
       if (!deletedTask) {
-        return res.status(404).json({ error: 'Task not found'});
+        return res.status(404).json({ error: 'Task not found' });
       }
       res.status(200).json({ message: 'Task Deleted Successfully' });
     } catch (error) {

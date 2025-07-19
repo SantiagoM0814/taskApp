@@ -1,4 +1,5 @@
 import UserModel from '../models/user.model.js';
+import EmailController from '../controllers/email.controller.js';
 import jwt from 'jsonwebtoken';
 import { comparePassword } from '../library/appBcrypt.js';
 
@@ -24,6 +25,7 @@ class AuthController {
 
             const newUser = new UserModel({ username, email, password });
             await newUser.save();
+            await EmailController.sendWelcomeEmail(newUser);
             return res.status(201).json({ message: 'User registered successfully' });
         } catch (error) {
             res.status(400).json({ error: error.message})

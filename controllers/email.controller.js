@@ -43,9 +43,9 @@ class EmailController {
     static async sendWelcomeEmail(user) {
         return this.sendEmail({
             to: user.email,
-            subject: 'Welcome to My App',
+            subject: 'Bienvenido a TaskApp',
             template: 'welcome-email',
-            data: { name: user.name },
+            data: { username: user.username, email: user.email },
         });
     }
 

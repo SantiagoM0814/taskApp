@@ -1,4 +1,5 @@
 import UserModel from '../models/user.model.js';
+import EmailController from '../controllers/email.controller.js'
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -22,6 +23,7 @@ class UserController {
 
             const newUserModel = new UserModel({ username, email, password });
             await newUserModel.save();
+            await EmailController.sendWelcomeEmail(newUserModel);
             return res.status(201).json({ message: 'User successfully registered' });
         } catch (error) {
             res.status(400).json({ error: error.message });
